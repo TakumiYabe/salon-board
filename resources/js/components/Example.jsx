@@ -1,25 +1,41 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {createRoot} from "react-dom";
+import React, {Fragment, useState, useEffect} from 'react';
+import {createRoot} from "react-dom/client";
+import axios from 'axios';
 
 function Example() {
-    return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">Example Component</div>
 
-                        <div className="card-body">I'm an example component!</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    return (
+        <Fragment>
+            <table>
+                <thead>
+                <tr>
+                    <th className="table-code">社員コード</th>
+                    <th className="table-name">名前(カナ)</th>
+                    <th className="table-name">名前</th>
+                    <th className="table-name">役職</th>
+                    <th className="table-date">入社日</th>
+                    <th className="table-button">勤怠</th>
+                </tr>
+                </thead>
+                <tbody>
+                {rows.map((row, i) => (
+                    <tr key ={i}>
+                        <td><a href = "../create">{row.code}</a></td>
+                        <td>{row.name_kana}</td>
+                        <td>{row.name}</td>
+                        <td>{row.staff_types_name}</td>
+                        <td>{row.haire_date}</td>
+                        <td>勤怠</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        </Fragment>
     );
 }
 
 export default Example;
 
 if (document.getElementById('app')) {
-    createRoot(document.getElementById('app')).render(<Example />);
+    createRoot(document.getElementById('app')).render(<Example/>);
 }

@@ -13,11 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-//
-//Auth::routes();
 
-
-Route::get('{any}', function () {return view('app');})->where('any','.*');
+Route::get('/staffs/index', 'App\Http\Controllers\Api\StaffsController@index')->name('staffs.index');
+Route::get('/staffs/edit', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.create');
+Route::get('/staffs/edit/{id}', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.edit');

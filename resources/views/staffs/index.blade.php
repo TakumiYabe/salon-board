@@ -14,7 +14,7 @@
             <h2>社員管理画面</h2>
         </div>
         <button>
-            <a href="{{ route('staffs.create')}}">新規登録</a>
+            <a href="{{ route('staffs.create')}}" class="anchor-button">新規登録</a>
         </button>
         <table>
             <thead>

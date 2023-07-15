@@ -17,10 +17,10 @@ return new class extends Migration
             //プロパティ
             $table->increments('id');
             $table->integer('customer_id')->unsigned();
-            $table->string('skin_type', 100);
-            $table->string('allergy', 100);
-            $table->string('skincare', 300);
-            $table->string('memo', 500);
+            $table->string('skin_type', 100)->default('');
+            $table->string('allergy', 100)->default('');
+            $table->string('skincare', 300)->default('');
+            $table->string('memo', 500)->default('');
             $table->datetime('inserted');
             $table->integer('insert_staff_id')->unsigned();
             $table->datetime('updated');

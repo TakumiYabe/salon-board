@@ -1,7 +1,40 @@
+.anchor-button{
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.display-flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+.form-whole{
+    width:1000px;
+}
+.form-buttons{
+    display:flex;
+    justify-content: flex-end;
+}
+.form-input{
+    width:1000px;
+    margin:0 auto;
+}
+.form-row{
+    width:1000px;
+}
+.form-submit{
+    width:100px;
+}
+
 .form-block{
     border: 1px solid #000000;
     background-color: #FFFFEE;
-    width: 400px;
+    width: 450px;
+    margin:20px;
     height: 300px;
 }
 .form-block label {
@@ -14,14 +47,51 @@
     margin:20px;
 }
 
-.input-name{
+.input-money{
+    width:100px
+}
+
+.input-date{
+    width:100px;
+}
+
+.input-name {
     width:200px;
+}
+.input-memo {
+    width:400px;
 }
 .input-address,
 .input-tel,
 .input-mail-address{
     width:300px;
 }
+
+.system-button{
+    margin:0 10px;
+    appearance: auto;
+    user-select: none;
+    text-wrap: nowrap;
+    align-items: flex-start;
+    text-align: center;
+    cursor: default;
+    box-sizing: border-box;
+    background-color: buttonface;
+    color: buttontext;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+}
+
+.button{
+    width:100px;
+}
+.button-middle{
+    width:120px;
+}
+
 
 
 table {
@@ -46,7 +116,3 @@ th, td {
     width:50px;
 }
 
-
-.is_void {
-    background-color: #C0C0C0;
-}

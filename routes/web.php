@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/staffs/index', 'App\Http\Controllers\Api\StaffsController@index')->name('staffs.index');
-Route::get('/staffs/edit', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.create');
-Route::get('/staffs/edit/{id}', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.edit');
+Route::match(['get', 'post'], '/staffs/edit', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.create');
+Route::match(['get', 'post'], '/staffs/edit/{id}', 'App\Http\Controllers\Api\StaffsController@edit')->name('staffs.edit');

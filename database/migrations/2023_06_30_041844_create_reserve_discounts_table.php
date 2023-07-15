@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('sales_date');
             $table->integer('discount_type_id')->unsigned();
             $table->decimal('discount_price', 9, 2);
-            $table->string('memo', 200);
+            $table->string('memo', 200)->default('');
             $table->datetime('inserted');
             $table->integer('insert_staff_id')->unsigned();
             $table->datetime('updated');

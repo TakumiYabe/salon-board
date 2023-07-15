@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class StaffTypes extends Model
 {
     use HasFactory;
+
+    public function staffs()
+    {
+        return $this->belongsTo(Staffs::class, 'staff_type_id');
+    }
 }

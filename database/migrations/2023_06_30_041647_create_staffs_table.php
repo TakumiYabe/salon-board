@@ -18,7 +18,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('code', 4);
             $table->integer('staff_type_id')->unsigned();
-            $table->string('password', 20);
+            $table->string('password', 60);
             $table->string('name', 20);
             $table->string('name_kana', 20);
             $table->date('birthday');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->decimal('hourly_wage', 6, 2);
             $table->date('haire_date');
             $table->tinyInteger('is_void')->default(0);
-            $table->string('memo', 400);
+            $table->string('memo', 400)->default('');
             $table->datetime('inserted');
             $table->integer('insert_staff_id')->unsigned();
             $table->datetime('updated');

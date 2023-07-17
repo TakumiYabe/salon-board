@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ToDo App</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"/>
+    @viteReactRefresh
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <main>
@@ -36,7 +39,7 @@
             <div class="form-block">
                 <h3>基本情報</h3>
                 <div class="form-element hidden">
-                    {{Form::hidden('id', $staff->id)}}
+                    {{Form::hidden('id', $staff->id, ['id' => 'staff_id','data-staff-id' => $staff->id])}}
                 </div>
                 <div class="form-element">
                     {{Form::label('name_kana','名前(フリガナ)',['class'=>'form-label'])}}
@@ -80,13 +83,6 @@
                     {{Form::label('code','社員コード',['class'=>'form-label'])}}
                     {{Form::text('code', $staff->code, ['class'=>'input-code', 'disabled' => true])}}
                 </div>
-                <div class="form-element display-flex">
-                    <div>
-                        {{Form::label('password','パスワード',['class'=>'form-label'])}}
-                        {{Form::text('-', '**********', ['class'=>'input-password', 'disabled' => true])}}
-                    </div>
-                    <input class="system-button button-middle js-change-password" type="button" value="パスワード変更">
-                </div>
                 <div class="form-element">
                     {{Form::label('staff_type_id','役職',['class'=>'form-label'])}}
                     {{Form::select('staff_type_id', $staffTypes, ['class'=>'input-mail-address', 'required' => 'required'])}}
@@ -111,9 +107,26 @@
                 </div>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-block-password">
+                <h3>パスワード</h3>
+                @if (!$staff->exist)
+                    <div>
+                        <p>新規登録の場合はサイトの初期設定パスワードが設定されます。</p>
+                    </div>
+                @endif
+                <div class="display-flex">
+                    <div class="form-element">
+                        {{Form::label('password','パスワード',['class'=>'form-label'])}}
+                        {{Form::text('-', '**********', ['class'=>'input-password', 'disabled' => true])}}
+                    </div>
+                    <div id="dialog-register-password" data-isNew="{{$staff->exists}}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
     {{Form::close()}}
-    </div>
 </main>
 </body>
 </html>

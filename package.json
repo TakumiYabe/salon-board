@@ -24,7 +24,10 @@
     "test": "tests"
   },
   "dependencies": {
-    "electron-to-chromium": "^1.4.454"
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.0",
+    "electron-to-chromium": "^1.4.454",
+    "jquery": "^3.7.0"
   },
   "repository": {
     "type": "git",

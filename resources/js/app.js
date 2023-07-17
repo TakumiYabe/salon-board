@@ -13,3 +13,4 @@ import './bootstrap';
  */
 
 import './components/Example.jsx';
+import './components/Password.jsx';

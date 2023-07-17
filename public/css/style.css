@@ -1,74 +1,12 @@
-.anchor-button{
+
+.anchor-button {
     color: black;
     cursor: pointer;
     text-decoration: none;
 }
 
-.hidden {
-    visibility: hidden;
-}
-
-.display-flex{
-    display: flex;
-    flex-wrap: wrap;
-}
-.form-whole{
-    width:1000px;
-}
-.form-buttons{
-    display:flex;
-    justify-content: flex-end;
-}
-.form-input{
-    width:1000px;
-    margin:0 auto;
-}
-.form-row{
-    width:1000px;
-}
-.form-submit{
-    width:100px;
-}
-
-.form-block{
-    border: 1px solid #000000;
-    background-color: #FFFFEE;
-    width: 450px;
-    margin:20px;
-    height: 300px;
-}
-.form-block label {
-    font-size: 10px;
-    display: inline-block;
-    text-align: left;
-    width: 70px;
-}
-.form-element{
-    margin:20px;
-}
-
-.input-money{
-    width:100px
-}
-
-.input-date{
-    width:100px;
-}
-
-.input-name {
-    width:200px;
-}
-.input-memo {
-    width:400px;
-}
-.input-address,
-.input-tel,
-.input-mail-address{
-    width:300px;
-}
-
-.system-button{
-    margin:0 10px;
+.system-button {
+    margin: 0 10px;
     appearance: auto;
     user-select: none;
     text-wrap: nowrap;
@@ -85,17 +23,127 @@
     border-image: initial;
 }
 
-.button{
-    width:100px;
-}
-.button-middle{
-    width:120px;
+.system-button:disabled {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
 }
 
+.button {
+    width: 100px;
+}
+
+.button-middle {
+    width: 120px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.error-message {
+    color: red;
+}
+
+.caution {
+    color:cadetblue;
+}
+
+.display-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-whole {
+    width: 1000px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.form-input {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.form-row {
+    width: 1000px;
+}
+
+.form-submit {
+    width: 100px;
+}
+
+.form-block {
+    border: 1px solid #000000;
+    background-color: #FFFFEE;
+    width: 450px;
+    margin: 20px;
+    height: 300px;
+}
+
+.form-block label {
+    font-size: 10px;
+    display: inline-block;
+    text-align: left;
+    width: 70px;
+}
+
+.form-block-password {
+    border: 1px solid #000000;
+    background-color: #FFFFEE;
+    width: 940px;
+    margin: 20px;
+    height: 200px;
+}
+
+.form-block-password label {
+    font-size: 10px;
+    display: inline-block;
+    text-align: left;
+    width: 70px;
+}
+
+.form-element {
+    margin: 20px;
+}
+
+.input-money {
+    width: 100px;
+    height: 30px;
+}
+
+.input-date {
+    width: 100px;
+    height: 30px;
+}
+
+.input-password {
+    width: 200px;
+    height: 30px;
+}
+
+.input-name {
+    width: 200px;
+    height: 30px;
+}
+
+.input-memo {
+    width: 400px;
+}
+
+.input-address,
+.input-tel,
+.input-mail-address {
+    height: 30px;
+    width: 300px;
+}
 
 
 table {
-    border-collapse:  collapse;
+    border-collapse: collapse;
 }
 
 th, td {
@@ -104,15 +152,18 @@ th, td {
 }
 
 .table-code {
-    width:100px;
+    width: 100px;
 }
+
 .table-name {
-    width:200px;
+    width: 200px;
 }
+
 .table-date {
-    width:150px;
+    width: 150px;
 }
+
 .table-button {
-    width:50px;
+    width: 50px;
 }
 

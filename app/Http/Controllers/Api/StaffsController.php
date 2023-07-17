@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Staffs;
 use App\Models\StaffTypes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class StaffsController extends Controller
 {
@@ -42,12 +43,20 @@ class StaffsController extends Controller
             // 編集
             if ($request->id) {
                 $staff = Staffs::where('id', $request->id);
-
                 $validatedData = $request->validate($validationRules);
                 $mergeData = (new Staffs)->createMergeData($validatedData);
 
-                $staff->update($mergeData);
-            // 新規
+                if ($staff->update($mergeData)) {
+                    return view('staffs/index')
+                        ->with('staffs', Staffs::with('staff_types')->get())
+                        ->with('flash_message', __('編集に成功しました。'));
+                } else {
+                    session(['inputData' => $request->all()]);
+                    return redirect()->back()
+                        ->with('staffs', Staffs::with('staff_types')->get())
+                        ->with('flash_message', __('編集に失敗しました。'));
+                }
+                // 新規
             } else {
                 $staff = new Staffs;
 
@@ -56,12 +65,18 @@ class StaffsController extends Controller
                 $mergeData = $staff->createMergeData($validatedData);
 
                 $staff->fill($mergeData);
-                $staff->password =bcrypt(config('app.defaultPassword'));
-                $staff->save();
-            }
-            $staffs = Staffs::with('staff_types')->get();
+                $staff->password = password_hash(config('app.defaultPassword'), PASSWORD_BCRYPT);
 
-            return view('staffs/index', compact('staffs'));
+                if ($staff->save()) {
+                    return view('staffs/index')
+                        ->with('staffs', Staffs::with('staff_types')->get())
+                        ->with('flash_message', __('新規登録に成功しました。'));
+                } else {
+                    return view('staffs/index')
+                        ->with('staffs', Staffs::with('staff_types')->get())
+                        ->with('flash_message', __('新規登録に失敗しました。'));
+                }
+            }
         } else {
             if ($id) {
                 $staff = Staffs::with('staff_types')->find($id);
@@ -74,9 +89,27 @@ class StaffsController extends Controller
         $sexes = collect(Sexes::get())->pluck('name', 'code');
 
         return view('staffs/edit',)
-                ->with(compact('staff'))
-                ->with(compact('staffTypes'))
-                ->with(compact('sexes'));
+            ->with(compact('staff', 'staffTypes', 'sexes'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $staff = Staffs::find($request->input('id'));
+
+        if (!password_verify($request->input('current_password'), $staff->password)) {
+            return response()->json(['error' => '現在のパスワードと登録されているパスワードが異なります。']);
+        }
+        if (!(8 <= mb_strlen($request->input('password')) && mb_strlen($request->input('password')) <= 20)) {
+            return response()->json(['error' => '新しいパスワードは8文字以上20文字以下で入力してください。']);
+        }
+        if ($request->input('password') !== $request->input('password_confirmation')) {
+            return response()->json(['error' => '新しいパスワードと新しいパスワード（確認用）が異なります。']);
+        }
+
+        $staff->password = password_hash($request->input('password'), PASSWORD_BCRYPT);
+        $staff->save();
+
+        return response()->json(['message' => 'パスワードの変更が完了しました。']);
     }
 
 

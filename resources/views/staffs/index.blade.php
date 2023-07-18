@@ -13,6 +13,19 @@
         <div>
             <h2>社員管理画面</h2>
         </div>
+        @if (session('flash_message'))
+            @if (session('flash_message.success'))
+                <div class="flash_message_success">
+                    {{ session('flash_message.success') }}
+                </div>
+            @endif
+                @if (session('flash_message.fail'))
+                    <div class="flash_message_error">
+                        {{ session('flash_message.fail') }}
+                    </div>
+                @endif
+        @endif
+
         <button>
             <a href="{{ route('staffs.create')}}" class="anchor-button">新規登録</a>
         </button>

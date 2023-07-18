@@ -41,15 +41,15 @@ class Staffs extends Model
             'id' => $data['id'] ?? null,
             'name_kana' => $data['name_kana'],
             'name' => $data['name'],
-            'birthday' => new DateTime($data['birthday_year'] . '-' . $data['birthday_month'] . '-' . $data['birthday_day']),
+            'birthday' => new DateTime($data['birthday']),
             'sex_code' => $data['sex_code'],
-            'address' => $data['address'] || '',
-            'tel' => $data['tel'] || '',
-            'mail_address' => $data['mail_address'] || '',
+            'address' => $data['address'] ?? '',
+            'tel' => $data['tel'] ?? '',
+            'mail_address' => $data['mail_address'] ?? '',
             'staff_type_id' => $data['staff_type_id'],
             'hourly_wage' => $data['hourly_wage'],
-            'haire_date' => new DateTime($data['haire_date_year'] . '-' . $data['haire_date_month'] . '-' . $data['haire_date_day']),
-            'memo' => $data['memo'] || '',
+            'haire_date' => new DateTime($data['haire_date']),
+            'memo' => $data['memo'] ?? '',
         ];
 
     }

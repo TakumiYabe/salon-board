@@ -15,6 +15,16 @@
     <div>
         <h2>社員編集画面-{{$staff->exists ? '編集' : '新規'}}</h2>
     </div>
+    @if (session('flash_message_success'))
+        <div class="flash_message_success">
+            {{ session('flash_message_success') }}
+        </div>
+    @endif
+    @if (session('flash_message_fail'))
+        <div class="flash_message_fail">
+            {{ session('flash_message_fail') }}
+        </div>
+    @endif
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -30,7 +40,7 @@
             {{Form::token()}}
         </div>
         <div class="form-buttons">
-            <a href=route('staffs.create') class="system-button button anchor-button">VOID</a>
+            <a href=route('staffs.void') class="system-button button anchor-button">VOID</a>
             {{Form::submit('送信', ['class'=>'form-submit'])}}
         </div>
     </div>
@@ -51,9 +61,7 @@
                 </div>
                 <div class="form-element">
                     {{Form::label('birthday','生年月日',['class'=>'form-label'])}}
-                    {{Form::text('birthday_year', date("Y", strtotime($staff->birthday)), ['class'=>'input-date', 'required' => 'required'])}}
-                    {{Form::text('birthday_month', date("m", strtotime($staff->birthday)), ['class'=>'input-date', 'required' => 'required'])}}
-                    {{Form::text('birthday_day', date("d", strtotime($staff->birthday)), ['class'=>'input-date', 'required' => 'required'])}}
+                    {{Form::text('birthday', $staff->birthday, ['class'=>'input-date', 'required' => 'required', 'placeholder' => 'YYYY/MM/DD'])}}
                 </div>
                 <div class="form-element" class="form-label">
                     {{Form::label('sex_code','性別',['class'=>'form-label', 'required' => 'required'])}}
@@ -94,9 +102,7 @@
                 </div>
                 <div class="form-element">
                     {{Form::label('haire_date','入社日',['class'=>'form-label'])}}
-                    {{Form::text('haire_date_year', date("Y", strtotime($staff->haire_date)), ['class'=>'input-date', 'required' => 'required'])}}
-                    {{Form::text('haire_date_month', date("m", strtotime($staff->haire_date)), ['class'=>'input-date', 'required' => 'required'])}}
-                    {{Form::text('haire_date_day', date("d", strtotime($staff->haire_date)), ['class'=>'input-date', 'required' => 'required'])}}
+                    {{Form::text('haire_date', $staff->haire_date, ['class'=>'input-date', 'required' => 'required', 'placeholder' => 'YYYY/MM/DD'])}}
                 </div>
             </div>
             <div class="form-block">

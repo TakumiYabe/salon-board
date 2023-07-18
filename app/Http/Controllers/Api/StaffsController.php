@@ -25,36 +25,30 @@ class StaffsController extends Controller
                 'id' => 'required',
                 'name_kana' => 'required|string|max:20',
                 'name' => 'required|string|max:20',
-                'birthday_year' => 'required|numeric|max:3000',
-                'birthday_month' => 'required|numeric|max:12',
-                'birthday_day' => 'required|numeric|max:31',
+                'birthday' => 'required',
                 'sex_code' => 'required',
                 'address' => 'max:100',
                 'tel' => 'max:20',
                 'mail_address' => 'email|max:100',
                 'staff_type_id' => 'required',
                 'hourly_wage' => 'required|numeric',
-                'haire_date_year' => 'required|numeric|max:3000',
-                'haire_date_month' => 'required|numeric|max:12',
-                'haire_date_day' => 'required||max:31',
+                'haire_date' => 'required',
                 'memo' => 'max:400',
             ];
 
             // 編集
             if ($request->id) {
-                $staff = Staffs::where('id', $request->id);
+                $staff = Staffs::where('id', $request->id)->first();
                 $validatedData = $request->validate($validationRules);
                 $mergeData = (new Staffs)->createMergeData($validatedData);
-
                 if ($staff->update($mergeData)) {
+                    session()->flash('flash_message.success', __('編集に成功しました。'));
                     return view('staffs/index')
-                        ->with('staffs', Staffs::with('staff_types')->get())
-                        ->with('flash_message', __('編集に成功しました。'));
+                        ->with('staffs', Staffs::with('staff_types')->get());
                 } else {
-                    session(['inputData' => $request->all()]);
+                    session()->flash('flash_message.fail', __('編集に失敗しました。'));
                     return redirect()->back()
-                        ->with('staffs', Staffs::with('staff_types')->get())
-                        ->with('flash_message', __('編集に失敗しました。'));
+                        ->with('staffs', Staffs::with('staff_types')->get());
                 }
                 // 新規
             } else {
@@ -68,13 +62,13 @@ class StaffsController extends Controller
                 $staff->password = password_hash(config('app.defaultPassword'), PASSWORD_BCRYPT);
 
                 if ($staff->save()) {
+                    session()->flash('flash_message.success', __('新規登録に成功しました。'));
                     return view('staffs/index')
-                        ->with('staffs', Staffs::with('staff_types')->get())
-                        ->with('flash_message', __('新規登録に成功しました。'));
+                        ->with('staffs', Staffs::with('staff_types')->get());
                 } else {
-                    return view('staffs/index')
-                        ->with('staffs', Staffs::with('staff_types')->get())
-                        ->with('flash_message', __('新規登録に失敗しました。'));
+                    session()->flash('flash_message.fail', __('新規登録に失敗しました。'));
+                    return redirect()->back()
+                        ->with('staffs', Staffs::with('staff_types')->get());
                 }
             }
         } else {

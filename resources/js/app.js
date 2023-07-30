@@ -5,12 +5,15 @@
  */
 
 import './bootstrap';
-
+import './base.js';
 /**
  * Next, we will create a fresh React component instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import './components/Example.jsx';
-import './components/Password.jsx';
+import './components/staff/Example.jsx';
+import './components/staff/Password.jsx';
+import './components/staff/Payroll.jsx';
+import './components/staff/Attendances.jsx';
+

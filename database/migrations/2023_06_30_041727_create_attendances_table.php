@@ -17,6 +17,7 @@ return new class extends Migration
             //プロパティ
             $table->increments('id');
             $table->integer('staff_id')->unsigned();
+            $table->string('year_and_month', 7);
             $table->date('date');
             $table->time('arrival_time');
             $table->time('leave_time');

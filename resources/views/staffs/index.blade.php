@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ToDo App</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-</head>
-<body>
-<main>
-    <div>
-        <div>
-            <h2>社員管理画面</h2>
+@extends('layouts.app')
+@section('content')
+    <div class="content">
+        <div class="content-header">
+            <div>
+                <h2>社員一覧画面</h2>
+            </div>
+            <div class="breadcrumb">
+                <a href="/">ホーム</a>
+                <span>></span>
+                <a href={{ route('staffs.index')}}>社員一覧</a>
+            </div>
         </div>
         @if (session('flash_message'))
             @if (session('flash_message.success'))
@@ -19,41 +17,80 @@
                     {{ session('flash_message.success') }}
                 </div>
             @endif
-                @if (session('flash_message.fail'))
-                    <div class="flash_message_error">
-                        {{ session('flash_message.fail') }}
-                    </div>
-                @endif
+            @if (session('flash_message.fail'))
+                <div class="flash_message_error">
+                    {{ session('flash_message.fail') }}
+                </div>
+            @endif
         @endif
-
-        <button>
-            <a href="{{ route('staffs.create')}}" class="anchor-button">新規登録</a>
-        </button>
-        <table>
-            <thead>
-            <tr>
-                <th class="table-code">社員コード</th>
-                <th class="table-name">名前(カナ)</th>
-                <th class="table-name">名前</th>
-                <th class="table-name">役職</th>
-                <th class="table-date">入社日</th>
-                <th class="table-button">勤怠</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($staffs as $staff)
-            <tr class={{$staff->is_void ? "is_void" : ""}} >
-                <td><a href="{{ route('staffs.edit', ['id' => $staff->id])}}">{{ $staff->code }}</a></td>
-                <td>{{ $staff->name_kana }}</td>
-                <td>{{ $staff->name }}</td>
-                <td>{{ $staff->staff_types->name }}</td>
-                <td>{{ $staff->haire_date }}</td>
-                <td>勤怠</td>
-            </tr>
-            @endforeach
-            </tbody>
-        </table>
+        <div class="content-body">
+            <button>
+                <a href="{{ route('staffs.edit')}}" class="anchor-button">新規登録</a>
+            </button>
+            <table>
+                <thead>
+                <tr>
+                    <th class="table-code">社員コード</th>
+                    <th class="table-name">名前(カナ)</th>
+                    <th class="table-name">名前</th>
+                    <th class="table-name">役職</th>
+                    <th class="table-date">入社日</th>
+                    <th class="table-button">給与</th>
+                    <th class="table-button">勤怠</th>
+                    <th class="table-button">支給・控除</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($staffs->filter(function ($staff) {
+                    return $staff->is_void === 0;
+                }) as $staff)
+                    <tr>
+                        <td class="table-code"><a href="{{ route('staffs.edit', ['id' => $staff->id])}}">{{ $staff->code }}</a></td>
+                        <td class="table-name">{{ $staff->name_kana }}</td>
+                        <td class="table-name">{{ $staff->name }}</td>
+                        <td class="table-name">{{ $staff->staff_types->name }}</td>
+                        <td class="table-date">{{ $staff->haire_date }}</td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与</a>
+                            </button>
+                        </td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠</a>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+            {{Form::label('-','VOIDされた社員を表示',['class'=>'form-label'])}}
+            {{Form::checkbox('-', '-', false, ['class'=>'js-open-table', 'id'=>'open-table-check'])}}
+            <table class="hidden-table" style="display: none;">
+                <tbody>
+                @foreach($staffs->filter(function ($staff) {
+                    return $staff->is_void === 1;
+                }) as $staff)
+                    <tr>
+                        <td class="table-code"><a href="{{ route('staffs.edit', ['id' => $staff->id])}}">{{ $staff->code }}</a></td>
+                        <td class="table-name">{{ $staff->name_kana }}</td>
+                        <td class="table-name">{{ $staff->name }}</td>
+                        <td class="table-name">{{ $staff->staff_types->name }}</td>
+                        <td class="table-date">{{ $staff->haire_date }}</td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与</a>
+                            </button>
+                        </td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠</a>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-</main>
-</body>
-</html>
+@endsection

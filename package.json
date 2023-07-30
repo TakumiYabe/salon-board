@@ -27,7 +27,8 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.0",
     "electron-to-chromium": "^1.4.454",
-    "jquery": "^3.7.0"
+    "jquery": "^3.7.0",
+    "react-number-format": "^5.2.2"
   },
   "repository": {
     "type": "git",

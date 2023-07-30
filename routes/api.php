@@ -17,4 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware'=>'api'],function(){
     Route::post('/staffs/updatePassword', [StaffsController::class, 'updatePassword']);
+    Route::post('/staffs/getStaff', [StaffsController::class, 'getStaff']);
+    Route::post('/staffs/getPayroll', [StaffsController::class, 'getPayroll']);
+    Route::post('/staffs/getAttendances', [StaffsController::class, 'getAttendances']);
 });

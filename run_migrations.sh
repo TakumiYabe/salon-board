@@ -19,8 +19,11 @@ php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041
 
 // 勤怠支給控除
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041727_create_attendances_table.php
+php artisan db:seed --class=AttendancesTableSeeder
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041741_create_provisions_table.php
+php artisan db:seed --class=ProvisionsTableSeeder
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041757_create_deductions_table.php
+php artisan db:seed --class=DeductionsTableSeeder
 
 // 顧客
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041932_create_customer_categories_table.php

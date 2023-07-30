@@ -2,7 +2,7 @@
 import React from 'react';
 import {createRoot} from "react-dom/client";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Password from './Password.jsx';
+import Password from './staff/Password.jsx';
 
 // デフォルトテーマをカスタマイズ
 const theme = createTheme({

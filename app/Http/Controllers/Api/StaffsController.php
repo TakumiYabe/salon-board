@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendances;
+use App\Models\Provisions;
 use App\Models\Staffs;
 use App\Models\StaffTypes;
 use Illuminate\Http\Request;
@@ -43,8 +45,7 @@ class StaffsController extends Controller
                 $mergeData = (new Staffs)->createMergeData($validatedData);
                 if ($staff->update($mergeData)) {
                     session()->flash('flash_message.success', __('編集に成功しました。'));
-                    return view('staffs/index')
-                        ->with('staffs', Staffs::with('staff_types')->get());
+                    return redirect()->route('staffs.index');
                 } else {
                     session()->flash('flash_message.fail', __('編集に失敗しました。'));
                     return redirect()->back()
@@ -63,8 +64,7 @@ class StaffsController extends Controller
 
                 if ($staff->save()) {
                     session()->flash('flash_message.success', __('新規登録に成功しました。'));
-                    return view('staffs/index')
-                        ->with('staffs', Staffs::with('staff_types')->get());
+                    return redirect()->route('staffs.index');
                 } else {
                     session()->flash('flash_message.fail', __('新規登録に失敗しました。'));
                     return redirect()->back()
@@ -82,10 +82,111 @@ class StaffsController extends Controller
         $staffTypes = collect(StaffTypes::get())->pluck('name', 'id');
         $sexes = collect(Sexes::get())->pluck('name', 'code');
 
-        return view('staffs/edit',)
+        return view('staffs.edit',)
             ->with(compact('staff', 'staffTypes', 'sexes'));
     }
 
+    /**
+     * VOID
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function void($id)
+    {
+        $staff = Staffs::find($id);
+        $staff->void();
+
+        return redirect()->route('staffs.index');
+    }
+
+    /**
+     * UNVOID
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function unVoid($id)
+    {
+        $staff = Staffs::find($id);
+        $staff->unVoid();
+
+        return redirect()->route('staffs.index');
+    }
+
+    /**
+     * 給与明細表示
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
+    public function displayPayroll($id)
+    {
+        $staff = Staffs::find($id);
+
+        $yearMonthList = Provisions::where('staff_id', $staff->id)
+            ->orderBy('year_and_month', 'desc')
+            ->pluck('year_and_month')
+            ->toArray();
+
+        return view('staffs.display-payroll',)
+            ->with(compact('staff', 'yearMonthList'));
+    }
+
+    public function getStaff(Request $request) {
+        $staffId = $request->input('staff_id');
+        $staff = Staffs::with('staff_types')
+            ->where(['id' => $staffId])
+            ->first();
+
+        return response()->json($staff);
+    }
+
+    /**
+     * 給与明細を取得します。
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPayroll(Request $request) {
+        $staffId = $request->input('staff_id');
+        $yearMonth = $request->input('year_and_month');
+
+        $staff = Staffs::find($staffId);
+        $payRoll = $staff->getPayroll($yearMonth);
+
+        return response()->json($payRoll);
+    }
+
+    public function displayAttendances($id)
+    {
+        $staff = Staffs::find($id);
+
+        $yearMonthList = array_values(array_unique(Attendances::where('staff_id', $staff->id)
+            ->orderBy('year_and_month', 'desc')
+            ->pluck('year_and_month')
+            ->toArray()));
+
+        return view('staffs.display-attendances',)
+            ->with(compact('staff', 'yearMonthList'));
+    }
+
+    /**
+     * 勤怠を取得します。
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAttendances(Request $request) {
+        $staffId = $request->input('staff_id');
+        $yearMonth = $request->input('year_and_month');
+
+        $staff = Staffs::find($staffId);
+        $attendances = $staff->getAttendances($yearMonth);
+
+        return response()->json($attendances);
+    }
+
+    /**
+     * パスワード更新(非同期)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updatePassword(Request $request)
     {
         $staff = Staffs::find($request->input('id'));

@@ -2,56 +2,27 @@ import React, {Fragment, useState, useEffect} from 'react';
 import {createRoot} from "react-dom/client";
 import axios from 'axios';
 
+import InformationTable from './InformationTable';
+import SelectYearMonth from './SelectYearMonth';
+import {formatTime, formatMoney, formatDate} from '../common/common';
+
 function Attendances() {
     const attendancesElement = $('#display-attendances');
     const staffId = attendancesElement.data('staff-id');
     const yearMonthList = attendancesElement.data('year-month-list');
-    const [staff, setStaff] = useState([]);
     const [attendances, setAttendances] = useState([]);
-    const [selectedYearAndMonth, setSelectedYearAndMonth] = useState(yearMonthList[0]);
+    const selectedYearAndMonth = yearMonthList[0];
     const [loading, setLoading] = useState(true);
 
-    const formatTime = (seconds) => {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const formattedMinutes = (minutes < 10) ? `0${minutes}` : minutes;
-
-        return `${hours}：${formattedMinutes}`;
-    };
-
-    const formatMoney = (number) => {
-        return Math.floor(number).toLocaleString()
-    }
-    const formatDate = (date) => {
-        return date.replace(selectedYearAndMonth + '-', '');
-    }
-
-    const handleChange = (event) => {
-        setSelectedYearAndMonth(event.target.value);
-    };
-
     useEffect(() => {
-        getStaff(staffId);
         getAttendances(selectedYearAndMonth);
     }, [selectedYearAndMonth]);
 
-    const getStaff = async (value) => {
-        await axios
-            .post('/api/staffs/getStaff', {
-                staff_id: staffId,
-            })
-            .then(response => {
-                setStaff(response.data);
-            }).catch(() => {
-                console.log('通信に失敗しました');
-            });
-    }
-
-    const getAttendances = async (value) => {
+    const getAttendances = async (yearAndMonth) => {
         await axios
             .post('/api/staffs/getAttendances', {
                 staff_id: staffId,
-                year_and_month: value,
+                year_and_month: yearAndMonth,
             })
             .then(response => {
                 setAttendances(response.data);
@@ -67,30 +38,13 @@ function Attendances() {
     } else {
         return (
             <Fragment>
-                <div>
-                    <select className="select-year-month" value={selectedYearAndMonth} onChange={handleChange}>
-                        {yearMonthList.map((yearMonth, index) => (
-                            <option key={index} value={yearMonth}>
-                                {yearMonth}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <table className="staff-information-table">
-                        <tr>
-                            <th className="table-title" rowSpan='2'>社員情報</th>
-                            <th>社員コード</th>
-                            <th>役職</th>
-                            <th className="table-name">氏名</th>
-                        </tr>
-                        <tr>
-                            <td>{staff.code}</td>
-                            <td>{staff.staff_types.name}</td>
-                            <td className="table-name">{staff.name}</td>
-                        </tr>
-                    </table>
-                </div>
+                <SelectYearMonth
+                    yearMonthList={yearMonthList}
+                    function={getAttendances}
+                />
+                <InformationTable
+                    staffId={staffId}
+                />
                 <div>
                     <table className="attendances-table">
                         <tr>

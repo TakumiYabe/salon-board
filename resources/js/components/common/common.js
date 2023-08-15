@@ -7,7 +7,7 @@ export const formatTime = (seconds) => {
 };
 
 export const formatMoney = (number) => {
-    return Math.floor(number).toLocaleString()
+    return Math.floor(number).toLocaleString();
 }
 
 export const formatDate = (date) => {

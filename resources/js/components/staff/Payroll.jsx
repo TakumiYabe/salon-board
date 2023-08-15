@@ -7,9 +7,9 @@ import SelectYearMonth from "./SelectYearMonth.jsx";
 import {formatTime, formatMoney} from '../common/common';
 
 function Payroll() {
-    const payrollElement = $('#display-payroll');
-    const staffId = payrollElement.data('staff-id');
-    const yearMonthList = payrollElement.data('year-month-list');
+    const element = $('#display-payroll');
+    const staffId = element.data('staff-id');
+    const yearMonthList = element.data('year-month-list');
     const [payroll, setPayroll] = useState([]);
     const selectedYearAndMonth = yearMonthList[0];
     const [loading, setLoading] = useState(true);

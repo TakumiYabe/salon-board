@@ -13,16 +13,7 @@
                 <span>社員編集</span>
             </div>
         </div>
-        @if (session('flash_message_success'))
-            <div class="flash_message_success">
-                {{ session('flash_message_success') }}
-            </div>
-        @endif
-        @if (session('flash_message_fail'))
-            <div class="flash_message_fail">
-                {{ session('flash_message_fail') }}
-            </div>
-        @endif
+        @include('layouts.flash-message')
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>

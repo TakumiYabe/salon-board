@@ -16,4 +16,5 @@ import './components/staff/Example.jsx';
 import './components/staff/Password.jsx';
 import './components/staff/Payroll.jsx';
 import './components/staff/Attendances.jsx';
+import './components/staff/ProvisionAndDeduction.jsx';
 

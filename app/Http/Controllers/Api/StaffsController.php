@@ -4,14 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendances;
+use App\Models\Deductions;
 use App\Models\Provisions;
 use App\Models\Staffs;
 use App\Models\StaffTypes;
+use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class StaffsController extends Controller
 {
+    /**
+     * 一覧
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
+     */
     public function index()
     {
         $staffs = Staffs::with('staff_types')->get();
@@ -19,6 +28,12 @@ class StaffsController extends Controller
         return view('staffs/index', compact('staffs'));
     }
 
+    /**
+     * 更新
+     * @param Request $request
+     * @param $id
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse
+     */
     public function edit(Request $request, $id = null)
     {
         // POST時
@@ -51,7 +66,7 @@ class StaffsController extends Controller
                     return redirect()->back()
                         ->with('staffs', Staffs::with('staff_types')->get());
                 }
-                // 新規
+            // 新規
             } else {
                 $staff = new Staffs;
 
@@ -115,7 +130,7 @@ class StaffsController extends Controller
     /**
      * 給与明細表示
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
     public function displayPayroll($id)
     {
@@ -130,6 +145,11 @@ class StaffsController extends Controller
             ->with(compact('staff', 'yearMonthList'));
     }
 
+    /**
+     * スタッフ取得(非同期)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getStaff(Request $request) {
         $staffId = $request->input('staff_id');
         $staff = Staffs::with('staff_types')
@@ -140,7 +160,7 @@ class StaffsController extends Controller
     }
 
     /**
-     * 給与明細を取得します。
+     * 給与明細取得(非同期)
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -154,6 +174,11 @@ class StaffsController extends Controller
         return response()->json($payRoll);
     }
 
+    /**
+     * 勤怠表示
+     * @param $id
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
+     */
     public function displayAttendances($id)
     {
         $staff = Staffs::find($id);
@@ -168,7 +193,7 @@ class StaffsController extends Controller
     }
 
     /**
-     * 勤怠を取得します。
+     * 勤怠取得(非同期)
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -180,6 +205,132 @@ class StaffsController extends Controller
         $attendances = $staff->getAttendances($yearMonth);
 
         return response()->json($attendances);
+    }
+
+    /**
+     * 支給・控除表示
+     * @param $id
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
+     */
+    public function displayProvisionAndDeduction($id)
+    {
+        $staff = Staffs::find($id);
+
+        $yearMonthList = Provisions::where('staff_id', $staff->id)
+            ->orderBy('year_and_month', 'desc')
+            ->pluck('year_and_month')
+            ->toArray();
+
+        // ※先月の支給・控除を未作成の場合があるのでその場合は先月をリストに追加
+        $lastMonth = Carbon::now()->subMonth()->year . '-' . str_pad(Carbon::now()->subMonth()->month, 2, '0', STR_PAD_LEFT);
+
+        if (!in_array($lastMonth, $yearMonthList)) {
+            array_unshift($yearMonthList, $lastMonth);
+        }
+
+        return view('staffs.display-provision-and-deduction',)
+            ->with(compact('staff', 'yearMonthList'));
+    }
+
+    /**
+     * 支給・控除取得(非同期)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProvisionAndDeduction(Request $request)
+    {
+        $staffId = $request->input('staff_id');
+        $yearMonth = $request->input('year_and_month');
+
+        $staff = Staffs::find($staffId);
+
+        return response()->json([
+            'provision' => $staff->getProvision($yearMonth),
+            'deduction' => $staff->getDeduction($yearMonth),
+        ]);
+    }
+
+    /**
+     * 支給・控除編集(非同期)
+     * @param $staffId
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function editProvisionAndDeduction($staffId, Request $request) {
+        $requestData = $request->input();
+        DB::beginTransaction();
+        try {
+            // 支給の保存
+            $provision = Provisions::where('staff_id', $staffId)
+                ->where('year_and_month', $requestData['year_and_month'])
+                ->get()
+                ->first() ?? null;
+
+            if ($provision) {
+                $provision->update([
+                    'work_salary' => $requestData['work_salary'] ?? 0,
+                    'over_work_salary' => $requestData['over_work_salary'] ?? 0,
+                    'bonus' => $requestData['bonus'] ?? 0,
+                    'commuting_allowance' => $requestData['commuting_allowance'] ?? 0,
+                    'taxable_amount' => $requestData['work_salary'] ?? 0 + $requestData['over_work_salary'] ?? 0 + $requestData['bonus'] ?? 0,
+                    'tax_exempt_amount' => $requestData['commuting_allowance'] ?? 0,
+                ]);
+            } else {
+                $provision = new Provisions;
+                $provision->staff_id = $staffId;
+                $provision->year_and_month = $requestData['year_and_month'] ?? 0;
+                $provision->work_salary = $requestData['work_salary'] ?? 0;
+                $provision->over_work_salary = $requestData['over_work_salary'] ?? 0;
+                $provision->bonus = $requestData['bonus'] ?? 0;
+                $provision->commuting_allowance = $requestData['commuting_allowance'] ?? 0;
+                $provision->taxable_amount = $requestData['work_salary'] ?? 0 + $requestData['over_work_salary'] ?? 0 + $requestData['bonus'] ?? 0;
+                $provision->tax_exempt_amount = $requestData['commuting_allowance'] ?? 0;
+                $provision->save();
+            }
+
+            //　控除の保存
+            $deduction = Deductions::where('staff_id', $staffId)
+                ->where('year_and_month', $requestData['year_and_month'])
+                ->get()
+                ->first() ?? null;
+
+            if ($deduction) {
+                $deduction->update([
+                    'health_insurance_fee' => $requestData['health_insurance_fee'] ?? 0,
+                    'employee_person_insurance_fee' => $requestData['employee_person_insurance_fee'] ?? 0,
+                    'employee_insurance_fee' => $requestData['employee_insurance_fee'] ?? 0,
+                    'income_tax' => $requestData['income_tax'] ?? 0,
+                    'resident_tax' => $requestData['resident_tax'] ?? 0,
+                    'social_security_amount' => $requestData['health_insurance_fee'] ?? 0 + $requestData['employee_person_insurance_fee'] ?? 0 + $requestData['employee_insurance_fee'] ?? 0,
+                    'tax_amount' => $requestData['income_tax'] ?? 0 + $requestData['resident_tax'] ?? 0,
+                ]);
+
+                $successMessage = __('更新に成功しました。');
+            } else {
+                $deduction = new Deductions();
+                $deduction->staff_id = $staffId;
+                $deduction->year_and_month = $requestData['year_and_month'] ?? 0;
+                $deduction->health_insurance_fee = $requestData['health_insurance_fee'] ?? 0;
+                $deduction->employee_person_insurance_fee = $requestData['employee_person_insurance_fee'] ?? 0;
+                $deduction->employee_insurance_fee = $requestData['employee_insurance_fee'] ?? 0;
+                $deduction->income_tax = $requestData['income_tax'] ?? 0;
+                $deduction->resident_tax = $requestData['resident_tax'] ?? 0;
+                $deduction->social_security_amount = $requestData['health_insurance_fee'] ?? 0 + $requestData['employee_person_insurance_fee'] ?? 0 + $requestData['employee_insurance_fee'] ?? 0;
+                $deduction->tax_amount = ($requestData['income_tax'] + $requestData['resident_tax']) ?? 0;
+                $deduction->save();
+
+                $successMessage = __('登録に成功しました。');
+            }
+
+            DB::commit();
+
+            session()->flash('flash_message.success', $successMessage);
+            return redirect()->route('staffs.index');
+        } catch (\Exception $e) {
+            session()->flash('flash_message.fail', __('登録・更新に失敗しました。'));
+            return redirect()->back()
+                ->with('id', $staffId);
+        }
     }
 
     /**
@@ -206,6 +357,4 @@ class StaffsController extends Controller
 
         return response()->json(['message' => 'パスワードの変更が完了しました。']);
     }
-
-
 }

@@ -7,9 +7,9 @@ import SelectYearMonth from './SelectYearMonth';
 import {formatTime, formatMoney, formatDate} from '../common/common';
 
 function Attendances() {
-    const attendancesElement = $('#display-attendances');
-    const staffId = attendancesElement.data('staff-id');
-    const yearMonthList = attendancesElement.data('year-month-list');
+    const element = $('#display-attendances');
+    const staffId = element.data('staff-id');
+    const yearMonthList = element.data('year-month-list');
     const [attendances, setAttendances] = useState([]);
     const selectedYearAndMonth = yearMonthList[0];
     const [loading, setLoading] = useState(true);

@@ -20,4 +20,5 @@ Route::group(['middleware'=>'api'],function(){
     Route::post('/staffs/getStaff', [StaffsController::class, 'getStaff']);
     Route::post('/staffs/getPayroll', [StaffsController::class, 'getPayroll']);
     Route::post('/staffs/getAttendances', [StaffsController::class, 'getAttendances']);
+    Route::post('/staffs/getProvisionAndDeduction', [StaffsController::class, 'getProvisionAndDeduction']);
 });

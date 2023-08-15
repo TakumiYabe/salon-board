@@ -8,6 +8,10 @@
     @viteReactRefresh
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const csrfToken = "{{ csrf_token() }}";
+    </script>
+
 </head>
 <body>
 <main>

@@ -175,6 +175,60 @@ class Staffs extends Model
         ];
     }
 
+    public function getProvision($yearMonth)
+    {
+        $provision = Provisions::where('staff_id', $this->id)
+            ->where('year_and_month', $yearMonth)
+            ->select([
+                'work_salary',
+                'over_work_salary',
+                'bonus',
+                'commuting_allowance',
+            ])
+            ->get()
+            ->first();
+
+        if (!$provision) {
+            $provision = new Provisions;
+
+            $totalAttendanceInformation = Attendances::where('staff_id', $this->id)
+                ->where('date', 'LIKE', $yearMonth . '%')
+                ->select([
+                    DB::raw('SUM(TIME_TO_SEC(work_time)) as total_work_time'),
+                    DB::raw('SUM(TIME_TO_SEC(over_work_time)) as total_over_work_time'),
+                ])
+                ->groupBy('staff_id')
+                ->get()
+                ->first();
+
+            $provision->work_salary = $this->hourly_wage/60*$totalAttendanceInformation->total_work_time/60 ?? 0;
+            $provision->over_work_salary = $this->hourly_wage/60*$totalAttendanceInformation->total_over_work_time/60 ?? 0;
+        }
+
+        return $provision;
+    }
+
+    public function getDeduction($yearMonth)
+    {
+        $deduction = Deductions::where('staff_id', $this->id)
+            ->where('year_and_month', $yearMonth)
+            ->select([
+                'health_insurance_fee',
+                'employee_person_insurance_fee',
+                'employee_insurance_fee',
+                'income_tax',
+                'resident_tax',
+            ])
+            ->get()
+            ->first();
+
+        if (!$deduction) {
+            $deduction = new Provisions;
+        }
+
+        return $deduction;
+    }
+
 
     private function _setCode()
     {

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Deductions extends Model
+class ShiftTypes extends Model
 {
     const CREATED_AT = 'inserted';
     const UPDATED_AT = 'updated';

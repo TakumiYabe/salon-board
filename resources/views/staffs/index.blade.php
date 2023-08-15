@@ -11,18 +11,7 @@
                 <a href={{ route('staffs.index')}}>社員一覧</a>
             </div>
         </div>
-        @if (session('flash_message'))
-            @if (session('flash_message.success'))
-                <div class="flash_message_success">
-                    {{ session('flash_message.success') }}
-                </div>
-            @endif
-            @if (session('flash_message.fail'))
-                <div class="flash_message_error">
-                    {{ session('flash_message.fail') }}
-                </div>
-            @endif
-        @endif
+        @include('layouts.flash-message')
         <div class="content-body">
             <button>
                 <a href="{{ route('staffs.edit')}}" class="anchor-button">新規登録</a>
@@ -52,12 +41,17 @@
                         <td class="table-date">{{ $staff->haire_date }}</td>
                         <td class="table-button">
                             <button>
-                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与</a>
+                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与明細</a>
                             </button>
                         </td>
                         <td class="table-button">
                             <button>
-                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠</a>
+                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠一覧</a>
+                            </button>
+                        </td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-provision-and-deduction', ['id' => $staff->id])}}" class="anchor-button">支給・控除編集</a>
                             </button>
                         </td>
                     </tr>
@@ -79,12 +73,17 @@
                         <td class="table-date">{{ $staff->haire_date }}</td>
                         <td class="table-button">
                             <button>
-                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与</a>
+                                <a href="{{ route('staffs.display-payroll', ['id' => $staff->id])}}" class="anchor-button">給与明細</a>
                             </button>
                         </td>
                         <td class="table-button">
                             <button>
-                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠</a>
+                                <a href="{{ route('staffs.display-attendances', ['id' => $staff->id])}}" class="anchor-button">勤怠一覧</a>
+                            </button>
+                        </td>
+                        <td class="table-button">
+                            <button>
+                                <a href="{{ route('staffs.display-provision-and-deduction', ['id' => $staff->id])}}" class="anchor-button">支給・控除編集</a>
                             </button>
                         </td>
                     </tr>

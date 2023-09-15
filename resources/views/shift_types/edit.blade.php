@@ -22,9 +22,9 @@
                     <table>
                         <tbody>
                         <tr class="js-mt-table-template" id="mt-new-row">
-                            <td class="table-name">{{Form::text('.name','', ['class'=>'input-name', 'required' => 'required', 'disabled' => 'disabled', 'max' => 20])}}</td>
-                            <td class="table-name">{{Form::time('.work_time_from', '00:01', ['class'=>'input-name', 'required' => 'required', 'disabled' => 'disabled'])}}</td>
-                            <td class="table-name">{{Form::time('.work_time_to', '23:59', ['class'=>'input-name', 'required' => 'required', 'disabled' => 'disabled',])}}</td>
+                            <td class="table-name">{{Form::text('.name','', ['class'=>'table-input', 'required' => 'required', 'disabled' => 'disabled', 'max' => 20])}}</td>
+                            <td class="table-name">{{Form::time('.work_time_from', '00:01', ['class'=>'table-input', 'required' => 'required', 'disabled' => 'disabled'])}}</td>
+                            <td class="table-name">{{Form::time('.work_time_to', '23:59', ['class'=>'table-input', 'required' => 'required', 'disabled' => 'disabled',])}}</td>
                             <td class="no-border-cell"><img src="{{asset('img/delete-row-icon.png')}}" class="opacity-icon js-delete-row-icon"></td>
                         </tr>
                         </tbody>
@@ -42,9 +42,9 @@
                         <tbody>
                         @foreach($shiftTypes as $shiftType)
                             <tr>
-                                <td class="table-name">{{Form::text($shiftType->id . '.name', $shiftType->name, ['class'=>'input-name', 'required' => 'required', 'max' => 20])}}</td>
-                                <td class="table-name">{{Form::time($shiftType->id . '.work_time_from', $shiftType->work_time_from, ['class'=>'input-name', 'required' => 'required'])}}</td>
-                                <td class="table-name">{{Form::time($shiftType->id . '.work_time_to', $shiftType->work_time_to, ['class'=>'input-name', 'required' => 'required'])}}</td>
+                                <td class="table-name">{{Form::text($shiftType->id . '.name', $shiftType->name, ['class'=>'table-input', 'required' => 'required', 'max' => 20])}}</td>
+                                <td class="table-name">{{Form::time($shiftType->id . '.work_time_from', $shiftType->work_time_from, ['class'=>'table-input', 'required' => 'required'])}}</td>
+                                <td class="table-name">{{Form::time($shiftType->id . '.work_time_to', $shiftType->work_time_to, ['class'=>'table-input', 'required' => 'required'])}}</td>
                             </tr>
                         @endforeach
                         <tr class="js-mt-last-row">

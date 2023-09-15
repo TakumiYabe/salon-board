@@ -3,7 +3,7 @@ import {createRoot} from "react-dom/client";
 import axios from 'axios';
 
 import InformationTable from './InformationTable';
-import SelectYearMonth from './SelectYearMonth';
+import SelectYearMonth from "../common/SelectYearMonth.jsx";
 import {formatTime, formatMoney, formatDate} from '../common/common';
 
 function ProvisionAndDeduction() {
@@ -31,12 +31,13 @@ function ProvisionAndDeduction() {
         getProvisionAndDeduction(selectedYearAndMonth);
     }, [selectedYearAndMonth]);
 
+    // 入力値変更
     const editChange = (e) => {
         formData[e.target.name] = e.target.value;
         setFormData(Object.assign({}, formData));
     }
 
-
+    // 送信ハンドル
     const handleSubmit = (event) => {
         const inputAmount = $('.input-money');
 
@@ -67,7 +68,6 @@ function ProvisionAndDeduction() {
                     income_tax: response.data.deduction.income_tax,
                     resident_tax: response.data.deduction.resident_tax,
                 });
-
                 setLoading(false);
             }).catch(() => {
                 console.log('通信に失敗しました');
@@ -109,7 +109,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="work_salary"
-                                               value={formatMoney(formData.work_salary)}
+                                               value={formatMoney(formData.work_salary ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -118,7 +118,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="over_work_salary"
-                                               value={formatMoney(formData.over_work_salary)}
+                                               value={formatMoney(formData.over_work_salary ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -127,7 +127,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="bonus"
-                                               value={formatMoney(formData.bonus)}
+                                               value={formatMoney(formData.bonus ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -136,7 +136,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="commuting_allowance"
-                                               value={formatMoney(formData.commuting_allowance)}
+                                               value={formatMoney(formData.commuting_allowance ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="health_insurance_fee"
-                                               value={formatMoney(formData.health_insurance_fee)}
+                                               value={formatMoney(formData.health_insurance_fee ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -157,7 +157,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="employee_person_insurance_fee"
-                                               value={formatMoney(formData.employee_person_insurance_fee)}
+                                               value={formatMoney(formData.employee_person_insurance_fee ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element"><label className="form-label">雇用保険</label>
@@ -165,7 +165,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="employee_insurance_fee"
-                                               value={formatMoney(formData.employee_insurance_fee)}
+                                               value={formatMoney(formData.employee_insurance_fee ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -174,7 +174,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="income_tax"
-                                               value={formatMoney(formData.income_tax)}
+                                               value={formatMoney(formData.income_tax ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                     <div className="form-element">
@@ -183,7 +183,7 @@ function ProvisionAndDeduction() {
                                                type="text"
                                                className="input-money"
                                                id="resident_tax"
-                                               value={formatMoney(formData.resident_tax)}
+                                               value={formatMoney(formData.resident_tax ?? 0)}
                                                onChange={editChange}/>
                                     </div>
                                 </div>

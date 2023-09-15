@@ -5,7 +5,7 @@
  */
 
 import './bootstrap';
-import './base.js';
+import './components/common/base.js';
 /**
  * Next, we will create a fresh React component instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -18,3 +18,6 @@ import './components/staff/Payroll.jsx';
 import './components/staff/Attendances.jsx';
 import './components/staff/ProvisionAndDeduction.jsx';
 
+import './components/shift_submissions/Edit.jsx';
+
+import './components/shifts/Edit.jsx';

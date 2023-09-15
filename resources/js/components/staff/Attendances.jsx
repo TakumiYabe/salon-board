@@ -3,7 +3,7 @@ import {createRoot} from "react-dom/client";
 import axios from 'axios';
 
 import InformationTable from './InformationTable';
-import SelectYearMonth from './SelectYearMonth';
+import SelectYearMonth from "../common/SelectYearMonth.jsx";
 import {formatTime, formatMoney, formatDate} from '../common/common';
 
 function Attendances() {
@@ -75,7 +75,6 @@ function Attendances() {
                         </tr>
                         </thead>
                         <tbody>
-
                         {(attendances.attendance_details).map((attendanceDetail, index) => (
                             <tr key={index}>
                                 <td>{formatDate(attendanceDetail.date)}</td>

@@ -1,4 +1,7 @@
 $(function () {
+    $('form input, form select, form textarea').on('change', function () {
+        $(this).addClass('edited');
+    });
 
     $('.js-open-table').on('change', function () {
         var isChecked = $(this).prop('checked');
@@ -21,10 +24,15 @@ $(function () {
         addRow.find('td').each(function () {
             var input = $(this).find('input');
             input.attr('name', rowCount + input.attr('name'))
+                .addClass('edited')
                 .prop('disabled', false);
         });
 
         $('.js-mt-last-row').before(addRow);
     });
+
+    $(document).on('click', '.js-delete-row-icon', function() {
+        $(this).closest('tr').remove();
+    })
 
 });

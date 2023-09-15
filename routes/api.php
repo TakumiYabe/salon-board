@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ShiftsController;
+use App\Http\Controllers\Api\ShiftSubmissionsController;
 use App\Http\Controllers\Api\StaffsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,10 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware'=>'api'],function(){
+Route::group(['middleware'=>'api'],function() {
+    // staffs
     Route::post('/staffs/updatePassword', [StaffsController::class, 'updatePassword']);
-    Route::post('/staffs/getStaff', [StaffsController::class, 'getStaff']);
+    Route::post('/staffs/get', [StaffsController::class, 'get']);
     Route::post('/staffs/getPayroll', [StaffsController::class, 'getPayroll']);
     Route::post('/staffs/getAttendances', [StaffsController::class, 'getAttendances']);
     Route::post('/staffs/getProvisionAndDeduction', [StaffsController::class, 'getProvisionAndDeduction']);
+
+    // shiftSubmissions
+    Route::post('/shiftSubmissions/get', [shiftSubmissionsController::class, 'get']);
+
+    // shifts
+    Route::post('/shifts/get', [shiftsController::class, 'get']);
 });

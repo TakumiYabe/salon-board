@@ -3,7 +3,7 @@ import {createRoot} from "react-dom/client";
 import axios from 'axios';
 
 import InformationTable from "./InformationTable.jsx";
-import SelectYearMonth from "./SelectYearMonth.jsx";
+import SelectYearMonth from "../common/SelectYearMonth.jsx";
 import {formatTime, formatMoney} from '../common/common';
 
 function Payroll() {
@@ -32,10 +32,10 @@ function Payroll() {
                 setLoading(false);
             });
     }
-
     if (loading) {
         return <div>Loading...</div>; // ローディング中の表示
     } else {
+        // TODO 書き直して入力がそろっていないときの使用を考える
         return (
             <Fragment>
                 <SelectYearMonth

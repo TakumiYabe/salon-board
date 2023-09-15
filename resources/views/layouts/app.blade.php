@@ -11,13 +11,11 @@
     <script>
         const csrfToken = "{{ csrf_token() }}";
     </script>
-
 </head>
 <body>
 <main>
-    @include('layouts.sidebar')
+    @include('layouts.sidebar', ['id' => 1])
     @yield('content')
-
 </main>
 </body>
 </html>

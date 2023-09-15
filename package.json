@@ -25,9 +25,14 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.11.0",
+    "@fullcalendar/core": "^6.1.8",
+    "@fullcalendar/daygrid": "^6.1.8",
+    "@fullcalendar/interaction": "^6.1.8",
     "@mui/material": "^5.14.0",
+    "classnames": "^2.3.2",
     "electron-to-chromium": "^1.4.454",
     "jquery": "^3.7.0",
+    "react-big-calendar": "^1.8.2",
     "react-number-format": "^5.2.2"
   },
   "repository": {

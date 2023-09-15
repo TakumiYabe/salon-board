@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ShiftsController;
+use App\Http\Controllers\Api\ShiftSubmissionsController;
 use App\Http\Controllers\Api\ShiftTypesController;
 use App\Http\Controllers\Api\StaffsController;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +29,10 @@ Route::match(['get', 'post'], '/staffs/editProvisionAndDeduction/{staff_id}', [S
 
 // shiftTypes
 Route::match(['get', 'post'],'/shift-types/edit', [ShiftTypesController::class, 'edit'])->name('shiftTypes.edit');
+
+// shiftSubmissions
+Route::match(['get', 'post'],'/shift-submissions/display/{id}', [ShiftSubmissionsController::class, 'display'])->name('shiftSubmissions.display');
+Route::match(['get', 'post'], '/shift-submissions/edit/{staff_id}', [ShiftSubmissionsController::class, 'edit'])->name('shiftSubmissions.edit');
+
+Route::match(['get', 'post'],'/shifts/display', [ShiftsController::class, 'display'])->name('shifts.display');
+Route::post('/shifts/edit', [ShiftsController::class, 'edit'])->name('shifts.edit');

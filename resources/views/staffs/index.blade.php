@@ -16,7 +16,7 @@
             <button>
                 <a href="{{ route('staffs.edit')}}" class="anchor-button">新規登録</a>
             </button>
-            <table>
+            <table class="staff-table">
                 <thead>
                 <tr>
                     <th class="table-code">社員コード</th>

@@ -14,6 +14,9 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class StaffsController extends Controller
 {
@@ -39,7 +42,6 @@ class StaffsController extends Controller
         // POST時
         if ($request->isMethod('post')) {
             $validationRules = [
-                'id' => 'required',
                 'name_kana' => 'required|string|max:20',
                 'name' => 'required|string|max:20',
                 'birthday' => 'required',
@@ -53,10 +55,16 @@ class StaffsController extends Controller
                 'memo' => 'max:400',
             ];
 
+            $validator = Validator::make($request->all(), $validationRules);
+            if ($validator->fails()) {
+                session()->flash('flash_message.fail', __($validator->errors()->first()));
+                return redirect()->back();
+            }
+            $validatedData = $request->input();
+
             // 編集
             if ($request->id) {
                 $staff = Staffs::where('id', $request->id)->first();
-                $validatedData = $request->validate($validationRules);
                 $mergeData = (new Staffs)->createMergeData($validatedData);
                 if ($staff->update($mergeData)) {
                     session()->flash('flash_message.success', __('編集に成功しました。'));
@@ -66,12 +74,10 @@ class StaffsController extends Controller
                     return redirect()->back()
                         ->with('staffs', Staffs::with('staff_types')->get());
                 }
-            // 新規
+                // 新規
             } else {
                 $staff = new Staffs;
-
                 unset($validationRules['id']);
-                $validatedData = $request->validate($validationRules);
                 $mergeData = $staff->createMergeData($validatedData);
 
                 $staff->fill($mergeData);
@@ -150,7 +156,8 @@ class StaffsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getStaff(Request $request) {
+    public function get(Request $request)
+    {
         $staffId = $request->input('staff_id');
         $staff = Staffs::with('staff_types')
             ->where(['id' => $staffId])
@@ -164,7 +171,8 @@ class StaffsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getPayroll(Request $request) {
+    public function getPayroll(Request $request)
+    {
         $staffId = $request->input('staff_id');
         $yearMonth = $request->input('year_and_month');
 
@@ -197,7 +205,8 @@ class StaffsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAttendances(Request $request) {
+    public function getAttendances(Request $request)
+    {
         $staffId = $request->input('staff_id');
         $yearMonth = $request->input('year_and_month');
 
@@ -251,15 +260,39 @@ class StaffsController extends Controller
     }
 
     /**
-     * 支給・控除編集(非同期)
      * @param $staffId
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function editProvisionAndDeduction($staffId, Request $request) {
-        $requestData = $request->input();
+    public function editProvisionAndDeduction($staffId, Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            throw new BadRequestException();
+        }
+
+        // バリデーションチェック
+        $validationRules = [
+            'year_and_month' => 'required',
+            'work_salary' => 'numeric',
+            'over_work_salary' => 'numeric',
+            'bonus' => 'numeric',
+            'commuting_allowance' => 'numeric',
+            'health_insurance_fee' => 'numeric',
+            'employee_person_insurance_fee' => 'numeric',
+            'employee_insurance_fee' => 'numeric',
+            'income_tax' => 'numeric',
+            'resident_tax' => 'numeric',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+        if ($validator->fails()) {
+            session()->flash('flash_message.fail', __($validator->errors()->first()));
+            return redirect()->back();
+        }
+
         DB::beginTransaction();
         try {
+            $requestData = $request->input();
             // 支給の保存
             $provision = Provisions::where('staff_id', $staffId)
                 ->where('year_and_month', $requestData['year_and_month'])
@@ -276,15 +309,17 @@ class StaffsController extends Controller
                     'tax_exempt_amount' => $requestData['commuting_allowance'] ?? 0,
                 ]);
             } else {
-                $provision = new Provisions;
-                $provision->staff_id = $staffId;
-                $provision->year_and_month = $requestData['year_and_month'] ?? 0;
-                $provision->work_salary = $requestData['work_salary'] ?? 0;
-                $provision->over_work_salary = $requestData['over_work_salary'] ?? 0;
-                $provision->bonus = $requestData['bonus'] ?? 0;
-                $provision->commuting_allowance = $requestData['commuting_allowance'] ?? 0;
-                $provision->taxable_amount = $requestData['work_salary'] ?? 0 + $requestData['over_work_salary'] ?? 0 + $requestData['bonus'] ?? 0;
-                $provision->tax_exempt_amount = $requestData['commuting_allowance'] ?? 0;
+                $provision = new Provisions([
+                    'staff_id' => $staffId,
+                    'year_and_month' => $requestData['year_and_month'] ?? 0,
+                    'work_salary' => $requestData['work_salary'] ?? 0,
+                    'over_work_salary' => $requestData['over_work_salary'] ?? 0,
+                    'bonus' => $requestData['bonus'] ?? 0,
+                    'commuting_allowance' => $requestData['commuting_allowance'] ?? 0,
+                    'taxable_amount' => $requestData['work_salary'] ?? 0 + $requestData['over_work_salary'] ?? 0 + $requestData['bonus'] ?? 0,
+                    'tax_exempt_amount' => $requestData['commuting_allowance'] ?? 0,
+                ]);
+
                 $provision->save();
             }
 
@@ -307,16 +342,17 @@ class StaffsController extends Controller
 
                 $successMessage = __('更新に成功しました。');
             } else {
-                $deduction = new Deductions();
-                $deduction->staff_id = $staffId;
-                $deduction->year_and_month = $requestData['year_and_month'] ?? 0;
-                $deduction->health_insurance_fee = $requestData['health_insurance_fee'] ?? 0;
-                $deduction->employee_person_insurance_fee = $requestData['employee_person_insurance_fee'] ?? 0;
-                $deduction->employee_insurance_fee = $requestData['employee_insurance_fee'] ?? 0;
-                $deduction->income_tax = $requestData['income_tax'] ?? 0;
-                $deduction->resident_tax = $requestData['resident_tax'] ?? 0;
-                $deduction->social_security_amount = $requestData['health_insurance_fee'] ?? 0 + $requestData['employee_person_insurance_fee'] ?? 0 + $requestData['employee_insurance_fee'] ?? 0;
-                $deduction->tax_amount = ($requestData['income_tax'] + $requestData['resident_tax']) ?? 0;
+                $deduction = new Deductions([
+                    'staff_id' => $staffId,
+                    'year_and_month' => $requestData['year_and_month'] ?? 0,
+                    'health_insurance_fee' => $requestData['health_insurance_fee'] ?? 0,
+                    'employee_person_insurance_fee' => $requestData['employee_person_insurance_fee'] ?? 0,
+                    'employee_insurance_fee' => $requestData['employee_insurance_fee'] ?? 0,
+                    'income_tax' => $requestData['income_tax'] ?? 0,
+                    'resident_tax' => $requestData['resident_tax'] ?? 0,
+                    'social_security_amount' => $requestData['health_insurance_fee'] ?? 0 + $requestData['employee_person_insurance_fee'] ?? 0 + $requestData['employee_insurance_fee'] ?? 0,
+                    'tax_amount' => ($requestData['income_tax'] + $requestData['resident_tax']) ?? 0,
+                ]);
                 $deduction->save();
 
                 $successMessage = __('登録に成功しました。');

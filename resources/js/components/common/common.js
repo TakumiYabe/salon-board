@@ -7,9 +7,14 @@ export const formatTime = (seconds) => {
 };
 
 export const formatMoney = (number) => {
-    return Math.floor(number).toLocaleString();
+    return Math.floor(number);
 }
 
 export const formatDate = (date) => {
     return date.substring(8);
+}
+
+export const formatDayWeek = (date) => {
+    console.log(date);
+    return date
 }

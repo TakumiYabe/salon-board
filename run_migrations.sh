@@ -9,10 +9,13 @@ php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041
 php artisan db:seed --class=StaffsTableSeeder
 
 // シフト
-php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041618_create_shift_submissions_table.php
-php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041626_create_shifts_table.php
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041638_create_shift_types_table.php
 php artisan db:seed --class=ShiftTypesTableSeeder
+php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041618_create_shift_submissions_table.php
+php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_09_03_133612_create_shift_submission_details_table.php
+php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041626_create_shifts_table.php
+php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_09_03_133602_create_shift_details_table.php
+
 
 // お知らせ
 php artisan migrate:refresh  --step=1 --path=/database/migrations/2023_06_30_041528_create_news_table.php

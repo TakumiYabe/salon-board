@@ -50,8 +50,8 @@
                             </div>
                             <div class="form-element">
                                 {{Form::label('name_kana','名前(フリガナ)',['class'=>'form-label'])}}
-                                {{Form::text('name_kana', $staff->name_kana, ['class'=>'input-name', 'required' => 'required', 'max' => 20])}}
-                            </div>
+
+                            </div>{{Form::text('name_kana', $staff->name_kana, ['class'=>'input-name', 'required' => 'required', 'max' => 20])}}
                             <div class="form-element">
                                 {{Form::label('name','名前',['class'=>'form-label'])}}
                                 {{Form::text('name', $staff->name, ['class'=>'input-name', 'required' => 'required', 'max' => 20])}}

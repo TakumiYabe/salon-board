@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
-class ShiftTypes extends Model
+use Illuminate\Database\Eloquent\Model;
+
+class ShiftSubmissions extends Model
 {
     const CREATED_AT = 'inserted';
     const UPDATED_AT = 'updated';
@@ -27,14 +27,8 @@ class ShiftTypes extends Model
         });
     }
 
-    public function getWorkTimeFromAttribute($value)
+    public function shift_submission_details()
     {
-        return substr($value, 0, 5);
+        return $this->hasMany(ShiftSubmissionDetails::class, 'shift_submission_id', 'id');
     }
-
-    public function getWorkTimeToAttribute($value)
-    {
-        return substr($value, 0, 5);
-    }
-
 }

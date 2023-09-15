@@ -12,7 +12,7 @@ function InformationTable(props) {
 
     const getStaff = async (staffId) => {
         await axios
-            .post('/api/staffs/getStaff', {
+            .post('/api/staffs/get', {
                 staff_id: staffId,
             })
             .then(response => {
@@ -28,7 +28,7 @@ function InformationTable(props) {
     } else {
         return (
             <div>
-                <table className="staff-information-table">
+                <table className="staff-table">
                     <tr>
                         <th className="table-title" rowSpan='2'>社員情報</th>
                         <th>社員コード</th>
